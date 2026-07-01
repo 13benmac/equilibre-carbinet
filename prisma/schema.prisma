@@ -8,56 +8,58 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  password  String
-  role      Role     @default(PSYCHOLOGIST)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  appointments Appointment[]
+  id             String        @id @default(cuid())
+  email          String        @unique
+  name           String?
+  password       String
+  role           Role          @default(PSYCHOLOGIST)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  patients       Patient[]     @relation("PatientPsychologist")
+  appointments   Appointment[] @relation("AppointmentPsychologist")
+  authoredNotes  Note[]        @relation("NoteAuthor")
 }
 
 model Patient {
-  id              String        @id @default(cuid())
-  firstName       String
-  lastName        String
-  phone           String
-  email           String?
-  birthDate       DateTime?
-  gender          Gender?
-  status          PatientStatus @default(ACTIVE)
-  psychologist    User?          @relation(fields: [psychologistId], references: [id])
-  psychologistId  String?
-  appointments    Appointment[]
-  notes           Note[]
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
+  id             String            @id @default(cuid())
+  firstName      String
+  lastName       String
+  phone          String
+  email          String?
+  birthDate      DateTime?
+  gender         Gender?
+  status         PatientStatus     @default(ACTIVE)
+  psychologist   User?             @relation("PatientPsychologist", fields: [psychologistId], references: [id])
+  psychologistId String?
+  appointments   Appointment[]
+  notes          Note[]
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 }
 
 model Appointment {
-  id           String      @id @default(cuid())
-  patient      Patient     @relation(fields: [patientId], references: [id])
-  patientId    String
-  psychologist User        @relation(fields: [psychologistId], references: [id])
+  id             String            @id @default(cuid())
+  patient        Patient           @relation(fields: [patientId], references: [id])
+  patientId      String
+  psychologist   User              @relation("AppointmentPsychologist", fields: [psychologistId], references: [id])
   psychologistId String
-  startAt      DateTime
-  endAt        DateTime
-  status       AppointmentStatus @default(CONFIRMED)
-  type         AppointmentType     @default(INDIVIDUAL)
-  notes        String?
-  createdAt    DateTime            @default(now())
-  updatedAt    DateTime            @updatedAt
+  startAt        DateTime
+  endAt          DateTime
+  status         AppointmentStatus @default(CONFIRMED)
+  type           AppointmentType   @default(INDIVIDUAL)
+  notes          String?
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
 }
 
 model Note {
-  id         String   @id @default(cuid())
-  patient    Patient  @relation(fields: [patientId], references: [id])
-  patientId  String
-  author     User     @relation(fields: [authorId], references: [id])
-  authorId   String
-  content    String
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  patient   Patient  @relation(fields: [patientId], references: [id])
+  patientId String
+  author    User     @relation("NoteAuthor", fields: [authorId], references: [id])
+  authorId  String
+  content   String
+  createdAt DateTime @default(now())
 }
 
 enum Role {
