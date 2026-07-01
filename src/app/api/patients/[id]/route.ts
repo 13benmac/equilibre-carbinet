@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET(_: Request, { params }: { params: { id: string } }) {
+export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const patient = await prisma.patient.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: {
       psychologist: {
         select: { id: true, name: true, email: true },
@@ -21,10 +22,11 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
   return NextResponse.json(patient);
 }
 
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+export async function PATCH(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const body = await request.json();
   const patient = await prisma.patient.update({
-    where: { id: params.id },
+    where: { id },
     data: {
       firstName: body.firstName,
       lastName: body.lastName,
@@ -40,7 +42,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   return NextResponse.json(patient);
 }
 
-export async function DELETE(_: Request, { params }: { params: { id: string } }) {
-  await prisma.patient.delete({ where: { id: params.id } });
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  await prisma.patient.delete({ where: { id } });
   return NextResponse.json({ success: true });
 }
