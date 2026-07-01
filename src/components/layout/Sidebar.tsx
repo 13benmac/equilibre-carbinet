@@ -6,6 +6,11 @@ import {
   UserCheck, Settings, LogOut, Brain
 } from "lucide-react";
 
+interface SidebarProps {
+  onNavigate?: () => void;
+  isMobileOpen?: boolean;
+}
+
 const navItems = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Tableau de bord" },
   { href: "/patients", icon: Users, label: "Patients" },
@@ -15,11 +20,11 @@ const navItems = [
   { href: "/parametres", icon: Settings, label: "Paramètres" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ onNavigate, isMobileOpen = false }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isMobileOpen ? "open" : ""}`}>
       {/* Logo */}
       <div style={{ padding: "28px 24px 20px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -60,7 +65,7 @@ export default function Sidebar() {
         {navItems.map(({ href, icon: Icon, label }) => {
           const active = pathname === href;
           return (
-            <Link key={href} href={href} className={`nav-item ${active ? "active" : ""}`}>
+            <Link key={href} href={href} className={`nav-item ${active ? "active" : ""}`} onClick={onNavigate}>
               <Icon size={18} />
               <span>{label}</span>
               {active && (

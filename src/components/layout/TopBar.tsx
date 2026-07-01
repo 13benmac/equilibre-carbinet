@@ -23,7 +23,13 @@ export default function TopBar({ title, subtitle, onMenuToggle }: TopBarProps) {
     }}>
       {/* Mobile menu */}
       <button
-        onClick={onMenuToggle}
+        onClick={() => {
+          if (onMenuToggle) {
+            onMenuToggle();
+            return;
+          }
+          window.dispatchEvent(new Event("toggle-mobile-sidebar"));
+        }}
         style={{ display: "none", border: "none", background: "none", cursor: "pointer", padding: 4 }}
         className="mobile-menu-btn"
       >
