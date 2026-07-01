@@ -41,7 +41,7 @@ export default function TopBar({ title, subtitle, onMenuToggle }: TopBarProps) {
           lineHeight: 1.2
         }}>{title}</h1>
         {subtitle && (
-          <p style={{ fontSize: 12, color: "#5A7A8A", margin: 0 }}>{subtitle}</p>
+          <p style={{ fontSize: 12, color: "#5A7A8A", margin: 0 }} className="hidden md:block">{subtitle}</p>
         )}
       </div>
 
